@@ -10,64 +10,127 @@ import java.sql.Statement;
 public class JdbcEx {
 
   public static void main(String[] args) {
-    System.out.println("==회원 정보 입력 후 조회==");
-    // 회원의 정보를 사용자 받는 기능 (static 메소드로)
-    // Member 클래스(vo)
-    memberInsert(id, name, job); // memberInsert(Mem member)
+    System.out.println("==회원 정보 입력 후 조회===");
+    //회원의 정보를 사용자 받는 기능  (static 메소드로)
+    //Member 클래스(VO)
+//    memberInsert( Member member );
     memberSearch();
-    System.out.println("==회원 정보 수정 후 조회==");
+    System.out.println("==회원 정보수정 후 조회===");
     memberUpdate();
     memberSearch();
-    System.out.println("==회원 정보 삭제 후 조회==");
+    System.out.println("==회원 정보삭제 후 조회===");
     memberDelete();
     memberSearch();
-//    mySqlConnection();
-//    studentJDBC();
+
   }
 
-  private static void memberDelete(){}
-  private static void memberUpdate(){}
-
-  private static void memberInsert(int id, String name, String job){
+  private static void memberDelete() {
     String url = "jdbc:mysql://localhost:3306/employees";
     String userName = "root";
-    String password = "mysql1234";
-    String query = "INSERT INTO member VALUES (?,?,?)";
+    String password = "1234";
+    String query = "DELETE FROM member where id = ? ";
 
     Connection con = null;
     PreparedStatement pstmt = null;
-    int res = 0;
+    int result = 0;
 
     try {
-      // 드라이버는 따로 설정 안해줘도자동 로딩이 된다.
-      // Class.forName("com.mysql.cj.jdbc.Driver");
-      con = DriverManager.getConnection(url,userName,password);
+      //Class.forName("com.mysql.cj.jdbc.Driver");
+      con = DriverManager.getConnection(url, userName, password);
       System.out.println(con);
       pstmt = con.prepareStatement(query);
-      pstmt.setInt(1,4);
-      pstmt.setString(2,"kss");
-      pstmt.setString(3,"professor");
 
-      res = pstmt.executeUpdate();
-      if(res == 1){
-        System.out.println("회원 정보가 입력되었습니다.");
-      } else if (res == 0) {
-        System.out.println("회원 정보 입력이 실패하였습니다.");
+      pstmt.setInt(2, 1);
+
+      result = pstmt.executeUpdate();
+      if (result == 1) {
+        System.out.println("회원 정보가 완전 잘 수정 되었습니다.");
+      } else if (result == 0) {
+        System.out.println("회원 정보 수정이 실패하였습니다.");
       }
 
       pstmt.close();
       con.close();
-
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
   }
 
-  public static void mySqlConnection(){
+  private static void memberUpdate() {
     String url = "jdbc:mysql://localhost:3306/employees";
     String userName = "root";
-    String password = "mysql1234";
-    String query = "SELECT * FROM member where id=1";
+    String password = "1234";
+    String query = "UPDATE member SET job = ? where id = ? ";
+
+    Connection con = null;
+    PreparedStatement pstmt = null;
+    int result = 0;
+
+    try {
+      //Class.forName("com.mysql.cj.jdbc.Driver");
+      con = DriverManager.getConnection(url, userName, password);
+      System.out.println(con);
+      pstmt = con.prepareStatement(query);
+
+      pstmt.setString(1, "engineer");
+      pstmt.setInt(2, 1);
+
+      result = pstmt.executeUpdate();
+      if (result == 1) {
+        System.out.println("회원 정보가 완전 잘 수정 되었습니다.");
+      } else if (result == 0) {
+        System.out.println("회원 정보 수정이 실패하였습니다.");
+      }
+
+      pstmt.close();
+      con.close();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+
+  }
+
+  private static void memberInsert() {
+    String url = "jdbc:mysql://localhost:3306/employees";
+    String userName = "root";
+    String password = "1234";
+    String query = "INSERT INTO member VALUES(?,?,?)";
+
+    Connection con = null;
+    PreparedStatement pstmt = null;
+    int result = 0;
+
+    try {
+      //Class.forName("com.mysql.cj.jdbc.Driver");
+      con = DriverManager.getConnection(url, userName, password);
+      System.out.println(con);
+      pstmt = con.prepareStatement(query);
+      pstmt.setInt(1, 4);
+      pstmt.setString(2, "kss");
+      pstmt.setString(3, "professor");
+
+      result = pstmt.executeUpdate();
+      if (result == 1) {
+        System.out.println("회원 정보가 입력되었습니다.");
+      } else if (result == 0) {
+        System.out.println("회원 정보 입력이 실패하였습니다.");
+      }
+
+      pstmt.close();
+      con.close();
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+
+
+  }
+
+
+  public static void memberSearch() {
+    String url = "jdbc:mysql://localhost:3306/employees";
+    String userName = "root";
+    String password = "1234";
+    String query = "SELECT * FROM member";
 
     Connection con = null;
     Statement stmt = null;
@@ -75,66 +138,26 @@ public class JdbcEx {
 
     try {
       Class.forName("com.mysql.cj.jdbc.Driver");
-      con = DriverManager.getConnection(url,userName,password);
+      con = DriverManager.getConnection(url, userName, password);
+      System.out.println(con);
       stmt = con.createStatement();
       rs = stmt.executeQuery(query);
-      while (rs.next()){
+      while (rs.next()) {
         int id = rs.getInt("id");
+
         String name = rs.getString("name");
         String job = rs.getString("job");
-        System.out.printf("id : %d name : %s job : %s", id, name, job);
+        System.out.printf("id : %d name : %s  job : %s", id, name, job);
       }
       rs.close();
       stmt.close();
       con.close();
-
-    }catch (Exception e){
-      System.out.println(e.getMessage());
-
+    } catch (ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
     }
 
   }
-
-  public static void studentJDBC(){
-    String url = "jdbc:mysql://localhost:3306/employees";
-    String userName = "root";
-    String password = "mysql1234";
-    String query = "SELECT * FROM STUDENT";
-
-    Connection con = null;
-    Statement stmt = null;
-    ResultSet rs = null;
-
-    try {
-      Class.forName("com.mysql.cj.jdbc.Driver");
-      con = DriverManager.getConnection(url,userName,password);
-      stmt = con.createStatement();
-      rs = stmt.executeQuery(query);
-      while (rs.next()){
-        int sno = rs.getInt("sno");
-        String name = rs.getString("name");
-        int korean = rs.getInt("korean");
-        int math = rs.getInt("math");
-        int english = rs.getInt("english");
-        int science = rs.getInt("science");
-        int total = rs.getInt("total");
-        float average = rs.getFloat("average");
-        String grade = rs.getString("grade");
-        System.out.println(sno + " " + name + " " + korean + " " + math + " " + english + " " + science + " " + total + " " + average + " " + grade);
-
-      }
-      rs.close();
-      stmt.close();
-      con.close();
-
-    }catch (Exception e){
-      System.out.println(e.getMessage());
-
-    }
-
-
-  }
-
-
 
 }
