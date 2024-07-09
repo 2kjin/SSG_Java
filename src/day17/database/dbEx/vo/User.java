@@ -1,5 +1,20 @@
 package day17.database.dbEx.vo;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter // 컴파일시 필드들에 대한 getter 메서드들 생성
+@Setter // 컴파일시 필드들에 대한 Setter 메서드들 생성
+@ToString
+@EqualsAndHashCode
+//@RequiredArgsConstructor
+@Data
+//@AllArgsConstructor
 public class User {
 
   private String userId;
